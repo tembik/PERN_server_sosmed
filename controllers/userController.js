@@ -74,12 +74,12 @@ const regUser = async (req, res) => {
     const q = "SELECT * FROM users WHERE username = $1";
     const userCek = await db.query(q, [username]);
     if (userCek.rows[0]) {
-      res.json({ message: "username sudah dipakai" });
+      res.json({ gagal: "username sudah dipakai" });
     } else {
       const q2 = "INSERT INTO users(username, password) VALUES($1, $2)";
       const hashedPass = await bcrypt.hash(password, 10);
       await db.query(q2, [username, hashedPass]);
-      res.json({ message: "register berhasil" });
+      res.json({ message: "register berhasil silakan login" });
     }
   } catch (error) {
     res.json({ message: error.message });

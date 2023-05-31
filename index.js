@@ -11,7 +11,7 @@ const komenRoute = require("./routes/komenRoute");
 dotenv.config();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({ origin: true }));
 app.use("/images", express.static("./images"));
 app.use("/post", postRoute);
 app.use("/user", userRoute);
