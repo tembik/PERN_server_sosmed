@@ -1,25 +1,5 @@
-// const { Post } = require("../models");
-// const { User } = require("../models");
 const db = require("../config/dbConnection");
 const cloudinary = require("../utils/cloudinary");
-// const fs = require("fs");
-
-// const getAllData = async (req, res) => {
-//   try {
-//     const hasil = await Post.findAll({
-//       include: [
-//         {
-//           model: User,
-//           attributes: ["id", "username"],
-//         },
-//       ],
-//       order: [["createdAt", "DESC"]],
-//     });
-//     res.json(hasil);
-//   } catch (error) {
-//     res.json({ message: error.message });
-//   }
-// };
 
 const getAllData = async (req, res) => {
   try {
@@ -31,20 +11,6 @@ const getAllData = async (req, res) => {
     res.json({ message: error.message });
   }
 };
-
-// const getUserPost = async (req, res) => {
-//   try {
-//     const id = req.params.id;
-//     const hasil = await Post.findAll({
-//       where: { userId: id },
-//       include: [{ model: User, attributes: ["id", "username"] }],
-//       order: [["createdAt", "DESC"]],
-//     });
-//     res.json(hasil);
-//   } catch (error) {
-//     res.json({ message: error.message });
-//   }
-// };
 
 const getUserPost = async (req, res) => {
   try {
@@ -58,19 +24,6 @@ const getUserPost = async (req, res) => {
   }
 };
 
-// const getOneData = async (req, res) => {
-//   try {
-//     const id = req.params.id;
-//     const hasil = await Post.findOne({
-//       where: { id: id },
-//       include: [{ model: User, attributes: ["id", "username"] }],
-//     });
-//     res.json(hasil);
-//   } catch (error) {
-//     res.json({ message: error.message });
-//   }
-// };
-
 const getOneData = async (req, res) => {
   try {
     const id = req.params.id;
@@ -83,29 +36,12 @@ const getOneData = async (req, res) => {
   }
 };
 
-// const createPost = async (req, res) => {
-//   try {
-//     if (req.file) {
-//       // const hasil = await cloudinary.uploader.upload(req.file.path);
-//       // req.body.gambar = hasil.secure_url;
-//       // req.body.cloudinary_id = hasil.public_id;
-//       req.body.gambar = req.file.path;
-//     }
-//     req.body.userId = req.user.id;
-//     await Post.create(req.body);
-//     res.json({ message: "data berhasil ditambah" });
-//   } catch (error) {
-//     res.json({ message: error.message });
-//   }
-// };
-
 const createPost = async (req, res) => {
   try {
     if (req.file) {
       const hasil = await cloudinary.uploader.upload(req.file.path);
       req.body.gambar = hasil.secure_url;
       req.body.cloudinary_id = hasil.public_id;
-      // req.body.gambar = req.file.path;
     }
     req.body.users_id = req.user.id;
     const q =
@@ -122,32 +58,6 @@ const createPost = async (req, res) => {
   }
 };
 
-// const updatePost = async (req, res) => {
-//   try {
-//     const id = req.params.id;
-//     const post = await Post.findOne({ where: { id: id } });
-//     if (req.user.id === post.userId) {
-//       if (req.file) {
-//         if (post.gambar !== null) {
-//           // cloudinary.uploader.destroy(post.cloudinary_id);
-//           const filepath = `./${post.gambar}`;
-//           fs.unlinkSync(filepath);
-//         }
-//         req.body.gambar = req.file.path;
-//         // const hasil = await cloudinary.uploader.upload(req.file.path);
-//         // req.body.gambar = hasil.secure_url;
-//         // req.body.cloudinary_id = hasil.public_id;
-//       }
-//       await Post.update(req.body, { where: { id: id } });
-//       res.json({ message: "data berhasil di update" });
-//     } else {
-//       res.json({ message: "user not authorized" });
-//     }
-//   } catch (error) {
-//     res.json({ message: error.message });
-//   }
-// };
-
 const updatePost = async (req, res) => {
   try {
     const id = req.params.id;
@@ -157,10 +67,7 @@ const updatePost = async (req, res) => {
       if (req.file) {
         if (post.rows[0].gambar !== null) {
           await cloudinary.uploader.destroy(post.rows[0].cloudinary_id);
-          // const filepath = `./${post.rows[0].gambar}`;
-          // fs.unlinkSync(filepath);
         }
-        // req.body.gambar = req.file.path;
         const hasil = await cloudinary.uploader.upload(req.file.path);
         req.body.gambar = hasil.secure_url;
         req.body.cloudinary_id = hasil.public_id;
@@ -186,26 +93,6 @@ const updatePost = async (req, res) => {
   }
 };
 
-// const deleteData = async (req, res) => {
-//   try {
-//     const id = req.params.id;
-//     const post = await Post.findOne({ where: { id: id } });
-//     if (req.user.id === post.userId) {
-//       if (post.gambar !== null) {
-//         // await cloudinary.uploader.destroy(post.cloudinary_id);
-//         const filepath = `./${post.gambar}`;
-//         fs.unlinkSync(filepath);
-//       }
-//       await Post.destroy({ where: { id: id } });
-//       res.json({ message: "data berhasil dihapus" });
-//     } else {
-//       res.json({ message: "user not authorized" });
-//     }
-//   } catch (error) {
-//     res.json({ message: error.message });
-//   }
-// };
-
 const deleteData = async (req, res) => {
   try {
     const id = req.params.id;
@@ -214,8 +101,6 @@ const deleteData = async (req, res) => {
     if (req.user.id === post.rows[0].users_id) {
       if (post.rows[0].gambar !== null) {
         await cloudinary.uploader.destroy(post.rows[0].cloudinary_id);
-        // const filepath = `./${post.rows[0].gambar}`;
-        // fs.unlinkSync(filepath);
       }
       const q2 = "DELETE FROM post WHERE id = $1";
       await db.query(q2, [id]);
